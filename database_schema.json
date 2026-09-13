@@ -1,0 +1,52 @@
+{
+  "version": "1.0",
+  "source_policy": "Use only licensed, user-supplied, public-domain or otherwise permitted data.",
+  "entities": {
+    "clubs": [
+      "id",
+      "name",
+      "country",
+      "league",
+      "strength",
+      "budget",
+      "youth",
+      "recruit",
+      "philosophy",
+      "history"
+    ],
+    "players": [
+      "id",
+      "clubId",
+      "name",
+      "nationality",
+      "birthDate",
+      "position",
+      "ca",
+      "pa",
+      "personality",
+      "history"
+    ],
+    "competitions": [
+      "id",
+      "name",
+      "country",
+      "format",
+      "season"
+    ],
+    "fixtures": [
+      "id",
+      "competitionId",
+      "homeClubId",
+      "awayClubId",
+      "date"
+    ],
+    "stories": [
+      "id",
+      "entityType",
+      "entityId",
+      "date",
+      "text",
+      "source"
+    ]
+  }
+}

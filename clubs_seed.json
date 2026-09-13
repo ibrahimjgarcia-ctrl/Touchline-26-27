@@ -1,0 +1,172 @@
+[
+  {
+    "id": "val",
+    "name": "Valencia CF",
+    "country": "España",
+    "league": "LaLiga",
+    "strength": 78,
+    "budget": 42,
+    "youth": 8,
+    "recruit": 8
+  },
+  {
+    "id": "bar",
+    "name": "FC Barcelona",
+    "country": "España",
+    "league": "LaLiga",
+    "strength": 91,
+    "budget": 180,
+    "youth": 10,
+    "recruit": 9
+  },
+  {
+    "id": "rma",
+    "name": "Real Madrid",
+    "country": "España",
+    "league": "LaLiga",
+    "strength": 94,
+    "budget": 260,
+    "youth": 8,
+    "recruit": 10
+  },
+  {
+    "id": "atm",
+    "name": "Atlético de Madrid",
+    "country": "España",
+    "league": "LaLiga",
+    "strength": 87,
+    "budget": 120,
+    "youth": 7,
+    "recruit": 8
+  },
+  {
+    "id": "ath",
+    "name": "Athletic Club",
+    "country": "España",
+    "league": "LaLiga",
+    "strength": 82,
+    "budget": 48,
+    "youth": 9,
+    "recruit": 6
+  },
+  {
+    "id": "ars",
+    "name": "Arsenal",
+    "country": "Inglaterra",
+    "league": "Premier League",
+    "strength": 89,
+    "budget": 170,
+    "youth": 8,
+    "recruit": 9
+  },
+  {
+    "id": "liv",
+    "name": "Liverpool",
+    "country": "Inglaterra",
+    "league": "Premier League",
+    "strength": 92,
+    "budget": 210,
+    "youth": 8,
+    "recruit": 9
+  },
+  {
+    "id": "mci",
+    "name": "Manchester City",
+    "country": "Inglaterra",
+    "league": "Premier League",
+    "strength": 94,
+    "budget": 300,
+    "youth": 9,
+    "recruit": 10
+  },
+  {
+    "id": "mun",
+    "name": "Manchester United",
+    "country": "Inglaterra",
+    "league": "Premier League",
+    "strength": 86,
+    "budget": 230,
+    "youth": 9,
+    "recruit": 9
+  },
+  {
+    "id": "bvb",
+    "name": "Borussia Dortmund",
+    "country": "Alemania",
+    "league": "Bundesliga",
+    "strength": 86,
+    "budget": 90,
+    "youth": 10,
+    "recruit": 10
+  },
+  {
+    "id": "bay",
+    "name": "Bayern München",
+    "country": "Alemania",
+    "league": "Bundesliga",
+    "strength": 93,
+    "budget": 220,
+    "youth": 8,
+    "recruit": 10
+  },
+  {
+    "id": "aja",
+    "name": "Ajax",
+    "country": "Países Bajos",
+    "league": "Eredivisie",
+    "strength": 84,
+    "budget": 48,
+    "youth": 10,
+    "recruit": 10
+  },
+  {
+    "id": "psv",
+    "name": "PSV",
+    "country": "Países Bajos",
+    "league": "Eredivisie",
+    "strength": 82,
+    "budget": 55,
+    "youth": 9,
+    "recruit": 9
+  },
+  {
+    "id": "por",
+    "name": "FC Porto",
+    "country": "Portugal",
+    "league": "Liga Portugal",
+    "strength": 84,
+    "budget": 75,
+    "youth": 8,
+    "recruit": 9
+  },
+  {
+    "id": "ben",
+    "name": "SL Benfica",
+    "country": "Portugal",
+    "league": "Liga Portugal",
+    "strength": 85,
+    "budget": 85,
+    "youth": 9,
+    "recruit": 10
+  },
+  {
+    "id": "int",
+    "name": "Inter",
+    "country": "Italia",
+    "league": "Serie A",
+    "strength": 89,
+    "budget": 120,
+    "youth": 7,
+    "recruit": 9
+  },
+  {
+    "id": "nap",
+    "name": "Napoli",
+    "country": "Italia",
+    "league": "Serie A",
+    "strength": 84,
+    "budget": 90,
+    "youth": 6,
+    "recruit": 9
+  }
+]

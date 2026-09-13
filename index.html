@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Touchline 26 — Portable</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2d;--panel2:#18223a;--line:#293653;--text:#eef3ff;--muted:#91a0bd;--accent:#55d6be;--gold:#f2c66d;--danger:#ff7185}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#09101d,#0e1729);color:var(--text);font:14px Inter,system-ui,Segoe UI,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:9px;padding:9px 12px;background:#22304f;color:#fff}button:hover{filter:brightness(1.15)}button.primary{background:var(--accent);color:#07131a;font-weight:800}button.gold{background:var(--gold);color:#15120a;font-weight:800}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}.side{border-right:1px solid var(--line);padding:18px;background:#0b1222;position:sticky;top:0;height:100vh}.brand{font-weight:900;font-size:21px;margin-bottom:22px}.brand span{color:var(--accent)}
+.nav button{display:block;width:100%;text-align:left;background:transparent;margin:3px 0;color:#c9d4ea}.nav button.active{background:#1b2946;color:#fff}.side .small{color:var(--muted);font-size:11px;margin-top:20px;line-height:1.5}
+.main{padding:18px 22px;max-width:1500px;width:100%;margin:auto}.top{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:16px}.top h1{font-size:22px;margin:0}.date{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}.card{background:linear-gradient(180deg,var(--panel),#0f1728);border:1px solid var(--line);border-radius:13px;padding:14px}.c12{grid-column:span 12}.c8{grid-column:span 8}.c6{grid-column:span 6}.c4{grid-column:span 4}.c3{grid-column:span 3}.metric{font-size:27px;font-weight:900}.muted{color:var(--muted)}.tag{display:inline-block;padding:4px 7px;border-radius:999px;background:#202e4b;color:#cfe1ff;font-size:11px;margin:2px}
+table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid #22304b;text-align:left}th{color:#9fb0ce;font-size:11px;text-transform:uppercase}.click{cursor:pointer}.click:hover{background:#17243d}
+.list{display:grid;gap:8px}.row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px;border:1px solid #22304b;border-radius:9px;background:#10192b}.row strong{display:block}.row small{color:var(--muted)}
+.bar{height:7px;background:#202b42;border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent)}
+.hero{padding:20px;border-radius:15px;background:radial-gradient(circle at 85% 20%,#284968,transparent 35%),linear-gradient(135deg,#152641,#0e1728);border:1px solid var(--line)}
+.hero h2{margin:0 0 6px;font-size:28px}.hero p{margin:4px 0;color:#a9b8d2}
+.clubgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}.club{padding:13px;border:1px solid var(--line);border-radius:12px;background:#111b30}.club:hover{border-color:var(--accent);transform:translateY(-1px)}.club .crest{font-size:28px;float:right}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.tabs button.sel{background:var(--accent);color:#07131a;font-weight:800}
+.chat{height:420px;overflow:auto;padding:10px;background:#0b1220;border-radius:10px;border:1px solid var(--line)}.msg{max-width:82%;padding:10px;margin:7px;border-radius:12px;line-height:1.45}.me{margin-left:auto;background:#21483f}.ai{background:#1b2944}.chatbox{display:flex;gap:8px;margin-top:8px}.chatbox textarea{flex:1;background:#0c1424;border:1px solid var(--line);color:#fff;border-radius:10px;padding:10px;min-height:50px}
+.notice{padding:10px;border-left:3px solid var(--gold);background:#171f31;margin:7px 0;border-radius:6px}.danger{border-left-color:var(--danger)}.ok{border-left-color:var(--accent)}
+.modal{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:20px;z-index:10}.modal.open{display:flex}.modalbox{max-width:900px;width:100%;max-height:90vh;overflow:auto;background:#10192b;border:1px solid var(--line);border-radius:14px;padding:18px}
+@media(max-width:900px){.app{grid-template-columns:1fr}.side{height:auto;position:relative;border-right:0;border-bottom:1px solid var(--line)}.nav{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}.c8,.c6,.c4,.c3{grid-column:span 12}.main{padding:12px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="modal" class="modal"><div class="modalbox" id="modalbox"></div></div>
+<script>
+const VERSION="6.1 Portable";
+const seedClubs=[
+{id:"val",name:"Valencia CF",country:"España",league:"LaLiga",strength:78,budget:42,youth:8,recruit:8,crest:"🦇",philosophy:"Cantera + transiciones",history:"Club histórico de Mestalla. Campeón de España en varias ocasiones y ganador de la Copa del Rey y de la UEFA Cup/Europa League. La identidad del club gira alrededor de Mestalla y una cantera con tradición."},
+{id:"bar",name:"FC Barcelona",country:"España",league:"LaLiga",strength:91,budget:180,youth:10,recruit:9,crest:"🔵🔴",philosophy:"Posesión + cantera",history:"Uno de los grandes clubes de Europa, con una tradición especialmente asociada al juego de posición y a La Masia."},
+{id:"rma",name:"Real Madrid",country:"España",league:"LaLiga",strength:94,budget:260,youth:8,recruit:10,crest:"👑",philosophy:"Estrellas + transición",history:"Gigante europeo con una extraordinaria historia en la Copa de Europa/Champions League y una política histórica de fichar grandes talentos."},
+{id:"atm",name:"Atlético de Madrid",country:"España",league:"LaLiga",strength:87,budget:120,youth:7,recruit:8,crest:"🔴⚪",philosophy:"Competitividad + bloque",history:"Club histórico de Madrid, reconocido por su identidad competitiva y por grandes etapas en España y Europa."},
+{id:"ath",name:"Athletic Club",country:"España",league:"LaLiga",strength:82,budget:48,youth:9,recruit:6,crest:"🔴⚪",philosophy:"Cantera + identidad",history:"Club singular por su histórica política de jugadores vinculados al País Vasco y una fuerte cultura de cantera."},
+{id:"sev",name:"Sevilla FC",country:"España",league:"LaLiga",strength:79,budget:45,youth:7,recruit:8,crest:"⚪🔴",philosophy:"Mercado + Europa",history:"Club andaluz con una historia europea especialmente ligada a sus éxitos en la Europa League."},
+{id:"soc",name:"Real Sociedad",country:"España",league:"LaLiga",strength:80,budget:55,youth:9,recruit:7,crest:"🔵⚪",philosophy:"Técnica + cantera",history:"Club vasco con una tradición importante de cantera y formación de futbolistas técnicos."},
+{id:"vil",name:"Villarreal CF",country:"España",league:"LaLiga",strength:81,budget:60,youth:8,recruit:8,crest:"🟡",philosophy:"Técnica + scouting",history:"Club que creció desde el fútbol regional hasta convertirse en habitual de las competiciones europeas."},
+{id:"ars",name:"Arsenal",country:"Inglaterra",league:"Premier League",strength:89,budget:170,youth:8,recruit:9,crest:"🔴",philosophy:"Posesión + talento",history:"Histórico club londinense, campeón de Inglaterra y referente del fútbol inglés."},
+{id:"liv",name:"Liverpool",country:"Inglaterra",league:"Premier League",strength:92,budget:210,youth:8,recruit:9,crest:"🔴",philosophy:"Presión + intensidad",history:"Uno de los clubes más laureados de Inglaterra y Europa, con una enorme cultura de Anfield."},
+{id:"mci",name:"Manchester City",country:"Inglaterra",league:"Premier League",strength:94,budget:300,youth:9,recruit:10,crest:"🔵",philosophy:"Posesión + control",history:"Club de Manchester que vivió una transformación profunda en el siglo XXI y se consolidó como potencia inglesa y europea."},
+{id:"mun",name:"Manchester United",country:"Inglaterra",league:"Premier League",strength:86,budget:230,youth:9,recruit:9,crest:"🔴",philosophy:"Tradición + estrellas",history:"Uno de los clubes más populares y laureados del fútbol inglés, con una gran tradición de desarrollar jóvenes."},
+{id:"bvb",name:"Borussia Dortmund",country:"Alemania",league:"Bundesliga",strength:86,budget:90,youth:10,recruit:10,crest:"🟡⚫",philosophy:"Jóvenes + presión",history:"Club alemán conocido por su gran ambiente y por dar oportunidades a jóvenes talentos."},
+{id:"bay",name:"Bayern München",country:"Alemania",league:"Bundesliga",strength:93,budget:220,youth:8,recruit:10,crest:"🔴",philosophy:"Dominio + talento",history:"El club alemán más laureado, habitual protagonista de la Bundesliga y la Champions."},
+{id:"psv",name:"PSV",country:"Países Bajos",league:"Eredivisie",strength:82,budget:55,youth:9,recruit:9,crest:"🔴⚪",philosophy:"Formación + ataque",history:"Histórico club neerlandés con fuerte tradición formativa y de desarrollo de talento."},
+{id:"aja",name:"Ajax",country:"Países Bajos",league:"Eredivisie",strength:84,budget:48,youth:10,recruit:10,crest:"⚪🔴",philosophy:"Cantera + posesión",history:"Uno de los grandes símbolos europeos de la formación de jóvenes y del fútbol de posición."},
+{id:"por",name:"FC Porto",country:"Portugal",league:"Liga Portugal",strength:84,budget:75,youth:8,recruit:9,crest:"🔵⚪",philosophy:"Scouting + competitividad",history:"Gigante portugués con una extraordinaria historia europea y gran tradición de descubrir talento."},
+{id:"ben",name:"SL Benfica",country:"Portugal",league:"Liga Portugal",strength:85,budget:85,youth:9,recruit:10,crest:"🔴⚪",philosophy:"Cantera + mercado",history:"Uno de los grandes de Portugal, con fuerte tradición de cantera y exportación de talento."},
+{id:"nap",name:"Napoli",country:"Italia",league:"Serie A",strength:84,budget:90,youth:6,recruit:9,crest:"🔵",philosophy:"Técnica + transición",history:"Club del sur de Italia con enorme identidad local y una historia marcada por grandes generaciones."},
+{id:"int",name:"Inter",country:"Italia",league:"Serie A",strength:89,budget:120,youth:7,recruit:9,crest:"🔵⚫",philosophy:"Estructura + intensidad",history:"Histórico club de Milán, campeón de Italia y Europa y con una fuerte identidad competitiva."}
+];
+
+const firstNames=["Álvaro","Iker","Mateo","Hugo","Pau","Nico","Eric","Sergio","Adrián","Marco","Dani","Bruno","Leo","Aitor","Martín","Gonzalo","Iván","Lucas","Unai","Jorge"];
+const lastNames=["Ferrando","Navarro","Serrano","Giménez","Ramos","Molina","Pérez","Torres","Vidal","Santos","Ortega","Costa","Marín","Llorente","Campos","Pastor","Ibáñez","Crespo","Sanz","Beltrán"];
+const positions=["POR","DFC","LI","LD","MC","MCD","MCO","EI","ED","DC"];
+
+function rng(seed){let x=seed>>>0;return()=>{x=(x*1664525+1013904223)>>>0;return x/4294967296}}
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
+function fmt(n){return Number(n).toFixed(1)}
+function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36)}
+
+let DB=JSON.parse(localStorage.getItem("tl26_save")||"null");
+if(!DB){
+  DB={year:2026,month:8,day:1,clubId:null,manager:"Entrenador",screen:"inicio",form:"433",
+      morale:72,mediaHeat:20,board:72,fan:70,money:0,history:[],news:[],players:[],youth:[],retired:[],conversations:{},press:[],
+      fixtures:[],table:{},seasonSeed:2026,lastAdvance:null,version:VERSION};
+}
+function club(){return seedClubs.find(c=>c.id===DB.clubId)}
+function save(){localStorage.setItem("tl26_save",JSON.stringify(DB))}
+function ensureData(){
+ if(!DB.clubId)return;
+ if(!DB.players.length){
+   const c=club(), r=rng(hash(c.id+DB.year));
+   for(let i=0;i<18;i++) DB.players.push(makePlayer(c,i,r(),false));
+ }
+ if(!DB.fixtures.length) makeFixtures();
+}
+function makePlayer(c,i,rv,isYouth){
+ let r=rng(hash(c.id+"p"+i)); let pos=positions[Math.floor(r()*positions.length)];
+ let base=isYouth?48+Math.floor(r()*18):62+Math.floor(r()*22);
+ let pa=isYouth?base+8+Math.floor(r()*25):base+Math.floor(r()*10);
+ return {id:uid(),name:firstNames[Math.floor(r()*firstNames.length)]+" "+lastNames[Math.floor(r()*lastNames.length)],age:isYouth?15+Math.floor(r()*3):20+Math.floor(r()*14),pos,ca:base,pa:clamp(pa,base,92),morale:60+Math.floor(r()*35),fitness:80+Math.floor(r()*20),potential:pa,personality:["ambicioso","sereno","competitivo","profesional","sensible"][Math.floor(r()*5)],history:isYouth?`Canterano de la generación ${DB.year}. Llegó al club a través de la red de captación juvenil.`:`Formado parcialmente fuera de ${c.name}; su trayectoria queda registrada desde el inicio de esta partida.`,seasonStats:{apps:0,goals:0,assists:0},contract:3};
+}
+function makeFixtures(){
+ const c=club(); DB.fixtures=[]; let d=1;
+ for(let i=0;i<12;i++){DB.fixtures.push({id:uid(),day:d,opp:seedClubs[(seedClubs.findIndex(x=>x.id===c.id)+i+1)%seedClubs.length].name,home:i%2===0,played:false,score:null});d+=7}
+}
+function youthIntake(){
+ const c=club(), r=rng(hash(c.id+DB.year+"intake")), count=3+Math.floor(r()*(c.youth/2+3));
+ let added=[];
+ for(let i=0;i<count;i++){
+   let p=makePlayer(c,i,r(),true); p.generation=DB.year; p.history=`Nacido futbolísticamente en la red de cantera de ${c.name}. Su generación de ${DB.year} fue valorada con potencial ${p.pa}.`; DB.youth.push(p); added.push(p);
+ }
+ DB.news.unshift(`La cantera ha generado ${count} nuevos talentos para la generación ${DB.year}.`);
+ DB.history.push({date:dateStr(),type:"cantera",text:`Generación ${DB.year}: ${added.map(x=>x.name).join(", ")}.`});
+}
+function dateStr(){return `${String(DB.day).padStart(2,"0")}/${String(DB.month).padStart(2,"0")}/${DB.year}`}
+function advance(days=1){
+ if(!DB.clubId)return;
+ for(let z=0;z<days;z++){
+   DB.day++;
+   if(DB.day>30){DB.day=1;DB.month++; if(DB.month>12){DB.month=1;DB.year++; seasonRollover()}}
+   DB.players.forEach(p=>{p.fitness=clamp(p.fitness+1,0,100);p.morale=clamp(p.morale+(DB.morale-70)*.01,0,100)})
+   const fx=DB.fixtures.find(f=>!f.played && f.day===DB.day);
+   if(fx) playMatch(fx);
+ }
+ DB.lastAdvance=dateStr(); save(); render();
+}
+function seasonRollover(){
+ youthIntake();
+ DB.players.forEach(p=>{p.age++;p.ca=clamp(p.ca+(p.age<24?(Math.random()*3):(Math.random()-0.4)),1,95);p.seasonStats={apps:0,goals:0,assists:0}});
+ DB.fixtures=[]; makeFixtures();
+ DB.history.unshift({date:dateStr(),type:"season",text:`Comienza la temporada ${DB.year}/${String(DB.year+1).slice(-2)}.`});
+ DB.news.unshift(`Nueva temporada: ${DB.year}/${String(DB.year+1).slice(-2)}. La cantera presenta su nueva generación.`);
+}
+function matchEngine(f){
+ const c=club(); let opp=seedClubs.find(x=>x.name===f.opp)||{name:f.opp,strength:74};
+ let avg=DB.players.reduce((a,p)=>a+p.ca,0)/Math.max(1,DB.players.length);
+ let tactic={433:{tempo:1,press:1,width:1,risk:1},4231:{tempo:1.05,press:.95,width:1.05,risk:1.05},352:{tempo:1.0,press:1.1,width:.9,risk:1.05}}[DB.form]||{tempo:1,press:1,width:1,risk:1};
+ let home=f.home?2.8:0, fatigue=DB.players.reduce((a,p)=>a+p.fitness,0)/Math.max(1,DB.players.length);
+ let strength=c.strength+(avg-70)*.7+(DB.morale-70)*.12+(fatigue-85)*.08;
+ let diff=(strength+home-opp.strength);
+ let baseXg=1.05+diff*.045;
+ let xgFor=clamp(baseXg*tactic.risk,0.25,3.7), xgAgainst=clamp((1.18-diff*.035)*(2-tactic.press*.18),.25,3.5);
+ let rnd=rng(hash(f.id+DB.year+DB.day));
+ const poisson=lambda=>{let L=Math.exp(-lambda),k=0,p=1;do{k++;p*=rnd()}while(p>L);return k-1}
+ let gf=poisson(xgFor),ga=poisson(xgAgainst);
+ let possession=clamp(50+diff*.7+tactic.width*2-2,30,70);
+ let shots=clamp(Math.round(xgFor*4+3+rnd()*6),3,22), shotsA=clamp(Math.round(xgAgainst*4+3+rnd()*6),3,22);
+ let events=[], names=DB.players.filter(p=>p.ca>0);
+ for(let i=0;i<gf;i++){let p=names[Math.floor(rnd()*names.length)];p.seasonStats.goals++;events.push(`${minute(rnd())}' ⚽ ${p.name}`)}
+ for(let i=0;i<ga;i++)events.push(`${minute(rnd())}' ⚽ ${f.opp}`);
+ for(let i=0;i<Math.floor(rnd()*3);i++)events.push(`${minute(rnd())}' 🟨 Tarjeta`)
+ return {gf,ga,xgFor,xgAgainst,possession,shots,shotsA,events:events.sort((a,b)=>parseInt(a)-parseInt(b)),tactical:{form:DB.form,press:tactic.press}};
+}
+function minute(r){return 1+Math.floor(r*90)}
+function playMatch(f){
+ if(f.played)return;
+ const res=matchEngine(f);f.played=true;f.score=[res.gf,res.ga];f.stats=res;
+ DB.morale=clamp(DB.morale+(res.gf-res.ga)*3,20,100);DB.board=clamp(DB.board+(res.gf-res.ga)*2,0,100);DB.fan=clamp(DB.fan+(res.gf-res.ga)*2,0,100);
+ DB.news.unshift(`${f.home?"🏠":"✈️"} ${club().name} ${res.gf}-${res.ga} ${f.opp}. xG ${fmt(res.xgFor)}-${fmt(res.xgAgainst)}.`);
+ DB.history.unshift({date:dateStr(),type:"match",text:`${club().name} ${res.gf}-${res.ga} ${f.opp}. Posesión ${Math.round(res.possession)}%, tiros ${res.shots}-${res.shotsA}.`});
+}
+function aiReply(p,text){
+ const t=text.toLowerCase();let intent="general",delta=0;
+ if(/jugar|minutos|titular|banquillo|alineación/.test(t)){intent="minutos";delta=2}
+ else if(/contrato|renovar|sueldo/.test(t)){intent="contrato";delta=1}
+ else if(/perdón|lo siento|disculpa/.test(t)){intent="disculpa";delta=4}
+ else if(/capitán|lider|líder|vestuario/.test(t)){intent="liderazgo";delta=3}
+ let tone=/gracias|confío|confio|orgullo|feliz|bien/.test(t)?"positivo":/enfad|molest|injust|triste|mal/.test(t)?"negativo":"neutral";
+ p.morale=clamp(p.morale+(tone==="positivo"?3:tone==="negativo"?-3:0),0,100);
+ const open={ambicioso:"Quiero competir y demostrar que puedo ayudar al equipo.",sereno:"Te escucho. Para mí lo importante es mantener la calma y hablar con hechos.",competitivo:"Prefiero responder en el campo, pero entiendo lo que me estás pidiendo.",profesional:"Lo valoro. Si cumplo en los entrenamientos, espero que eso se refleje en las decisiones.",sensible:"Aprecio que me lo digas directamente; para mí la confianza es importante."}[p.personality];
+ const ending=intent==="minutos"?"Hablemos de objetivos concretos y de lo que necesitas mejorar para ganarte esos minutos.":intent==="contrato"?"Quiero que primero dejemos claro tu papel deportivo; después podemos hablar de las condiciones.":intent==="disculpa"?"Acepto la disculpa. Lo importante es que a partir de ahora trabajemos juntos.":intent==="liderazgo"?"Estoy dispuesto a asumir responsabilidad dentro del vestuario si me das ese espacio.":"Gracias por hablar conmigo sin rodeos.";
+ DB.conversations[p.id]=DB.conversations[p.id]||[]; DB.conversations[p.id].push({from:"me",text});DB.conversations[p.id].push({from:"player",text:open+" "+ending});
+ DB.history.unshift({date:dateStr(),type:"chat",text:`Conversación con ${p.name}: ${intent}/${tone}.`});save();
+}
+function pressReply(text){
+ const t=text.toLowerCase();let mood=/orgullo|confianza|gran|feliz|equipo/.test(t)?"positivo":/culpa|problema|fracaso|mal|crisis/.test(t)?"negativo":"neutral";
+ DB.mediaHeat=clamp(DB.mediaHeat+(mood==="positivo"?-2:mood==="negativo"?6:1),0,100);DB.board=clamp(DB.board+(mood==="positivo"?2:mood==="negativo"?-2:0),0,100);
+ let r=mood==="positivo"?"La sala de prensa recoge un mensaje de confianza y unidad.":mood==="negativo"?"Tus palabras generan debate y aumentan la presión mediática.":"Los medios interpretan la declaración como prudente.";
+ DB.press.unshift({date:dateStr(),text,reply:r,mood});DB.news.unshift(`🎙️ Prensa: ${r}`);save();
+}
+function nav(s){DB.screen=s;render()}
+function selectClub(id){DB.clubId=id;DB.players=[];DB.youth=[];DB.fixtures=[];DB.history=[];DB.news=[];DB.morale=72;DB.mediaHeat=20;DB.board=72;DB.fan=70;DB.year=2026;DB.month=8;DB.day=1;DB.screen="dashboard";ensureData();youthIntake();save();render()}
+function reset(){localStorage.removeItem("tl26_save");location.reload()}
+function exportSave(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(DB,null,2)],{type:"application/json"}));a.download="touchline26-partida.json";a.click()}
+function importSave(){document.getElementById("file").click()}
+function loadFile(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{DB=JSON.parse(r.result);save();render()}catch{alert("Archivo no válido")}};r.readAsText(f)}
+function render(){
+ const root=document.getElementById("root");
+ if(!DB.clubId){root.innerHTML=clubPicker();return}
+ ensureData();
+ root.innerHTML=`<div class="app"><aside class="side"><div class="brand">Touchline <span>26</span></div><div class="nav">
+ <button class="${DB.screen==="dashboard"?"active":""}" onclick="nav('dashboard')">🏠 Inicio</button>
+ <button class="${DB.screen==="plantilla"?"active":""}" onclick="nav('plantilla')">👥 Plantilla</button>
+ <button class="${DB.screen==="cantera"?"active":""}" onclick="nav('cantera')">🌱 Cantera</button>
+ <button class="${DB.screen==="partidos"?"active":""}" onclick="nav('partidos')">⚽ Partidos</button>
+ <button class="${DB.screen==="tactica"?"active":""}" onclick="nav('tactica')">🧠 Táctica</button>
+ <button class="${DB.screen==="jugadores"?"active":""}" onclick="nav('jugadores')">💬 Jugadores</button>
+ <button class="${DB.screen==="prensa"?"active":""}" onclick="nav('prensa')">🎙️ Prensa</button>
+ <button class="${DB.screen==="historia"?"active":""}" onclick="nav('historia')">📚 Historia</button>
+ <button onclick="exportSave()">💾 Exportar</button><button onclick="importSave()">📥 Importar</button><button onclick="reset()">🔄 Nueva partida</button>
+ </div><div class="small">${club().name}<br>${club().league} · ${DB.year}/${String(DB.year+1).slice(-2)}<br><br>Motor ${VERSION}<br>Partida local: autosave</div></aside>
+ <main class="main"><div class="top"><div><h1>${title()}</h1><div class="date">${dateStr()} · ${DB.lastAdvance?"Último avance "+DB.lastAdvance:"Nueva temporada"}</div></div><div><button onclick="advance(1)">▶ Avanzar 1 día</button> <button class="gold" onclick="advance(7)">⏩ 1 semana</button></div></div>${screenHTML()}</main></div><input id="file" type="file" accept=".json" style="display:none" onchange="loadFile(event)">`;
+}
+function title(){return {dashboard:"Centro de mando",plantilla:"Plantilla",cantera:"Cantera y newgens",partidos:"Calendario y resultados",tactica:"Táctica",jugadores:"Conversaciones",prensa:"Sala de prensa",historia:"Historia del club"}[DB.screen]}
+function clubPicker(){return `<div class="main"><div class="hero"><h2>Touchline 26</h2><p>Elige tu club. Construye una carrera que pueda durar décadas.</p><p class="muted">Incluye cantera, newgens, motor de partidos, conversaciones, prensa, historias y guardado local.</p></div><div style="height:14px"></div><div class="clubgrid">${seedClubs.map(c=>`<div class="club click" onclick="selectClub('${c.id}')"><div class="crest">${c.crest}</div><h3>${c.name}</h3><div class="muted">${c.country} · ${c.league}</div><p>${c.philosophy}</p><span class="tag">Fuerza ${c.strength}</span><span class="tag">Cantera ${c.youth}/10</span><span class="tag">€${c.budget}M</span><p class="muted">${c.history}</p><button class="primary" onclick="event.stopPropagation();selectClub('${c.id}')">Elegir club</button></div>`).join("")}</div></div>`}
+function screenHTML(){
+ const c=club();
+ if(DB.screen==="dashboard")return `<div class="grid"><div class="c8 card"><h3>${c.crest} ${c.name}</h3><p class="muted">${c.philosophy}</p><div class="grid"><div class="c3"><span class="muted">Moral</span><div class="metric">${Math.round(DB.morale)}</div></div><div class="c3"><span class="muted">Directiva</span><div class="metric">${Math.round(DB.board)}</div></div><div class="c3"><span class="muted">Afición</span><div class="metric">${Math.round(DB.fan)}</div></div><div class="c3"><span class="muted">Prensa</span><div class="metric">${Math.round(DB.mediaHeat)}</div></div></div></div>
+ <div class="c4 card"><h3>Próximo partido</h3>${nextFixture()}</div>
+ <div class="c6 card"><h3>Noticias</h3>${DB.news.slice(0,7).map(n=>`<div class="notice">${n}</div>`).join("")||"<span class='muted'>No hay noticias.</span>"}</div>
+ <div class="c6 card"><h3>Identidad histórica</h3><p>${c.history}</p><span class="tag">${c.philosophy}</span><span class="tag">Cantera ${c.youth}/10</span><span class="tag">Captación ${c.recruit}/10</span></div></div>`;
+ if(DB.screen==="plantilla")return `<div class="card"><h3>Primera plantilla</h3><table><tr><th>Jugador</th><th>Pos</th><th>Edad</th><th>CA</th><th>PA</th><th>Morale</th><th>Forma</th></tr>${DB.players.map(p=>`<tr class="click" onclick="playerModal('${p.id}')"><td><b>${p.name}</b><br><span class="muted">${p.personality}</span></td><td>${p.pos}</td><td>${p.age}</td><td>${Math.round(p.ca)}</td><td>${Math.round(p.pa)}</td><td>${Math.round(p.morale)}</td><td>${Math.round(p.fitness)}</td></tr>`).join("")}</table></div>`;
+ if(DB.screen==="cantera")return `<div class="grid"><div class="c4 card"><h3>Academia</h3><div class="metric">${c.youth}/10</div><p class="muted">Captación ${c.recruit}/10</p><div class="bar"><i style="width:${c.youth*10}%"></i></div><p>La calidad de las generaciones depende de instalaciones, captación y variación anual.</p><button class="primary" onclick="youthIntake();save();render()">Generar promoción</button></div><div class="c8 card"><h3>Generaciones juveniles</h3>${DB.youth.length?`<table><tr><th>Jugador</th><th>Gen.</th><th>Edad</th><th>Pos</th><th>CA</th><th>PA</th><th>Historia</th></tr>${DB.youth.map(p=>`<tr class="click" onclick="playerModal('${p.id}')"><td><b>${p.name}</b></td><td>${p.generation}</td><td>${p.age}</td><td>${p.pos}</td><td>${p.ca}</td><td>${p.pa}</td><td>${p.history}</td></tr>`).join("")}</table>`:"<p class='muted'>Todavía no hay una generación. Pulsa generar promoción.</p>"}</div></div>`;
+ if(DB.screen==="partidos")return `<div class="card"><h3>Calendario</h3><table><tr><th>Fecha</th><th>Partido</th><th>Resultado</th><th>Estado</th></tr>${DB.fixtures.map(f=>`<tr><td>${f.day}/${DB.month}/${DB.year}</td><td>${f.home?"🏠":"✈️"} ${f.opp}</td><td>${f.played?f.score.join(" - "):"—"}</td><td>${f.played?"Finalizado":"Pendiente"}</td></tr>`).join("")}</table></div>`;
+ if(DB.screen==="tactica")return `<div class="grid"><div class="c6 card"><h3>Formación</h3><div class="tabs">${["433","4231","352"].map(x=>`<button class="${DB.form===x?"sel":""}" onclick="DB.form='${x}';save();render()">${x}</button>`).join("")}</div><p>La formación modifica los parámetros del motor: presión, amplitud, riesgo y volumen ofensivo.</p></div><div class="c6 card"><h3>Filosofía del club</h3><p>${c.philosophy}</p><p class="muted">El motor combina esta identidad con tu formación y el estado de los jugadores.</p></div></div>`;
+ if(DB.screen==="jugadores")return playerChat();
+ if(DB.screen==="prensa")return pressUI();
+ return `<div class="card"><h3>Crónica histórica de la partida</h3>${DB.history.map(h=>`<div class="notice"><b>${h.date}</b> · ${h.type}<br>${h.text}</div>`).join("")||"<p class='muted'>Todavía no hay acontecimientos.</p>"}</div>`;
+}
+function nextFixture(){let f=DB.fixtures.find(x=>!x.played);return f?`<h3>${f.home?"🏠":"✈️"} ${f.opp}</h3><p class="muted">Fecha ${f.day}/${DB.month}/${DB.year}</p><button class="primary" onclick="advance(Math.max(1, f.day-DB.day))">Jugar siguiente partido</button>`:"Sin partidos pendientes."}
+function playerChat(){
+ let p=DB.players[0];return `<div class="grid"><div class="c4 card"><h3>Vestuario</h3><div class="list">${DB.players.map(x=>`<div class="row click" onclick="selectChat('${x.id}')"><div><strong>${x.name}</strong><small>${x.pos} · ${x.personality}</small></div><span>${Math.round(x.morale)}</span></div>`).join("")}</div></div><div class="c8 card" id="chatPanel">${chatPanel(p)}</div></div>`;
+}
+let chatId=null;
+function selectChat(id){chatId=id;render()}
+function chatPanel(p){
+ let msgs=DB.conversations[p.id]||[];return `<h3>💬 ${p.name}</h3><p class="muted">${p.personality} · morale ${Math.round(p.morale)} · CA ${Math.round(p.ca)} / PA ${Math.round(p.pa)}</p><div class="chat">${msgs.length?msgs.map(m=>`<div class="msg ${m.from==="me"?"me":"ai"}">${m.text}</div>`).join(""):`<div class="muted">Escribe libremente. El jugador interpreta intención, tono y contexto.</div>`}</div><div class="chatbox"><textarea id="chatInput" placeholder="Ej.: Quiero que luches por la titularidad y me demuestres que puedo confiar en ti."></textarea><button class="primary" onclick="sendChat('${p.id}')">Enviar</button></div>`}
+function sendChat(id){let p=DB.players.find(x=>x.id===id);let el=document.getElementById("chatInput");if(el.value.trim())aiReply(p,el.value.trim());chatId=id;render()}
+function pressUI(){return `<div class="grid"><div class="c7 card"><h3>🎙️ Conferencia de prensa</h3><p class="muted">Puedes escribir una respuesta completa. El sistema detecta tono, presión y efectos sobre la narrativa.</p><textarea id="pressInput" style="width:100%;min-height:130px;background:#0c1424;border:1px solid var(--line);color:#fff;border-radius:10px;padding:10px" placeholder="Ej.: Estoy orgulloso del equipo, pero tenemos que mejorar la concentración en los últimos minutos."></textarea><br><br><button class="primary" onclick="sendPress()">Responder</button></div><div class="c5 card"><h3>Historial de prensa</h3>${DB.press.slice(0,8).map(x=>`<div class="notice ${x.mood==="negativo"?"danger":"ok"}"><b>${x.date}</b><br>“${x.text}”<br><span class="muted">${x.reply}</span></div>`).join("")||"<span class='muted'>Sin declaraciones.</span>"}</div></div>`}
+function sendPress(){let e=document.getElementById("pressInput");if(e.value.trim())pressReply(e.value.trim());render()}
+function playerModal(id){let p=DB.players.find(x=>x.id===id)||DB.youth.find(x=>x.id===id);if(!p)return;document.getElementById("modalbox").innerHTML=`<h2>${p.name}</h2><p>${p.pos} · ${p.age} años · ${p.personality}</p><div class="grid"><div class="c3 card"><span class="muted">CA</span><div class="metric">${Math.round(p.ca)}</div></div><div class="c3 card"><span class="muted">PA</span><div class="metric">${Math.round(p.pa)}</div></div><div class="c3 card"><span class="muted">Moral</span><div class="metric">${Math.round(p.morale)}</div></div><div class="c3 card"><span class="muted">Forma</span><div class="metric">${Math.round(p.fitness)}</div></div></div><div class="card"><h3>Historia</h3><p>${p.history}</p></div><button onclick="closeModal()">Cerrar</button>`;document.getElementById("modal").classList.add("open")}
+function closeModal(){document.getElementById("modal").classList.remove("open")}
+window.addEventListener("beforeunload",save);render();
+</script>
+</body>
+</html>
